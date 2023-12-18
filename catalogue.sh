@@ -16,6 +16,7 @@ VALIDATE(){
     if [ $1 -ne 0 ]
     then
         echo -e "$2 ... $R FAILED $N"
+        exit 1
     else
         echo -e "$2 ... $G SUCCESS $N"
     fi
@@ -41,11 +42,16 @@ dnf install nodejs -y &>> $LOGFILE
 
 VALIDATE $? "Installing NodeJS:18"
 
-useradd roboshop
+id roboshop
+if [ $? -ne 0 ]
+then
+    useradd roboshop
+    VALIDATE $? "roboshop user creation"
+else
+    echo -e "roboshop user already exist $Y SKIPPING $N"
+fi
 
-VALIDATE $? "Creating roboshop user"
-
-mkdir /app
+mkdir -p /app
 
 VALIDATE $? "Creating app directory"
 
@@ -55,7 +61,7 @@ VALIDATE $? "Downloading catalogue application"
 
 cd /app 
 
-unzip /tmp/catalogue.zip &>> $LOGFILE
+unzip -o /tmp/catalogue.zip &>> $LOGFILE
 
 VALIDATE $? "Unzipping catalogue"
 
@@ -63,7 +69,7 @@ npm install &>> $LOGFILE
 
 VALIDATE $? "Installin dependencies"
 
-cp D:/shell-scripting/catalogue.service /etc/systemd/system/catalogue.service
+cp /home/centos/shell-scripting/catalogue.service /etc/systemd/system/catalogue.service &>> $LOGFILE
 
 VALIDATE $? "Copying calalogue.service file"
 
@@ -79,7 +85,7 @@ systemctl start catalogue &>> $LOGFILE
 
 VALIDATE $? "Starting catalogue"
 
-cp D:/shell-scripting/mongo.repo /etc/yum.repos.d/mongo.repo 
+cp /home/centos/shell-scripting/mongo.repo /etc/yum.repos.d/mongo.repo 
 
 VALIDATE $? "Copying mongodb repo"
 
