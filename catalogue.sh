@@ -69,7 +69,7 @@ npm install &>> $LOGFILE
 
 VALIDATE $? "Installin dependencies"
 
-cp D:/shell-scripting/catalogue.service /etc/systemd/system/catalogue.service &>> $LOGFILE
+cp /D:/shell-scripting/catalogue.service /etc/systemd/system/catalogue.service &>> $LOGFILE
 
 VALIDATE $? "Copying calalogue.service file"
 
@@ -85,7 +85,7 @@ systemctl start catalogue &>> $LOGFILE
 
 VALIDATE $? "Starting catalogue"
 
-cp D:/shell-scripting/mongo.repo /etc/yum.repos.d/mongo.repo 
+cp /D:/shell-scripting/mongo.repo /etc/yum.repos.d/mongo.repo 
 
 VALIDATE $? "Copying mongodb repo"
 
