@@ -3,7 +3,7 @@
 ID=$(id -u)
 R="\e[31m"
 G="\e[32m"
-y="\e[33m"
+Y="\e[33m"
 N="\e[0m"
 MONGODB_HOST=mongodb.govardhanrudraraju.cloud
 
@@ -48,7 +48,7 @@ then
     useradd roboshop
     VALIDATE $? "roboshop user creation"
 else
-    echo -e "roboshop user already exist $Y SKIPPING"
+    echo -e "roboshop user already exist $Y SKIPPING $N"
 fi
 
 mkdir -p /app
