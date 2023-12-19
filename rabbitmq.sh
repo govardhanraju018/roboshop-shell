@@ -30,6 +30,15 @@ else
     echo "You are root user"
 fi # fi means reverse of if, indicating condition end
 
+id roboshop
+if [ $? -ne 0 ]
+then
+    useradd roboshop
+    VALIDATE $? "roboshop user creation"
+else
+    echo -e "roboshop user already exist $Y SKIPPING $N"
+fi
+
 curl -s https://packagecloud.io/install/repositories/rabbitmq/erlang/script.rpm.sh | bash &>> $LOGFILE
 
 VALIDATE $? "Downloading erlang script"
