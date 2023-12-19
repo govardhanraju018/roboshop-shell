@@ -1,68 +1,68 @@
 #!/bin/bash
 
+
 ID=$(id -u)
-R="\e[31m"
-G="\e[32m"
-Y="\e[33m"
-N="\e[0m"
-MONGDB_HOST=mongodb.govardhanrudraraju.cloud
+
 
 TIMESTAMP=$(date +%F-%H-%M-%S)
+
+
 LOGFILE="/tmp/$0-$TIMESTAMP.log"
 
-echo "script stareted executing at $TIMESTAMP" &>> $LOGFILE
+
+echo "Script started at $TIMESTAMP" &>> $LOGFILE
+
+
+RED="\e[31m"
+G="\e[32m"
+Yel="\e[33m"
+NORMAL="\e[0m"
+
+
 
 VALIDATE(){
-    if [ $1 -ne 0 ]
+    if [ $1 = 0 ]
     then
-        echo -e "$2 ... $R FAILED $N"
-        exit 1
+      echo -e "$2... $G Sucessful $NORMAL"    
     else
-        echo -e "$2 ... $G SUCCESS $N"
+      echo -e "$2...$RED failed $NORMAL"
+      exit 1
     fi
 }
 
-if [ $ID -ne 0 ]
-then
-    echo -e "$R ERROR:: Please run this script with root access $N"
-    exit 1 # you can give other than 0
-else
-    echo "You are root user"
-fi # fi means reverse of if, indicating condition end
 
-id roboshop
-if [ $? -ne 0 ]
+if [ $ID != 0 ]
 then
-    useradd roboshop
-    VALIDATE $? "roboshop user creation"
+ echo "Error: $RED Pleae run as root user $NORMAL"
+ exit 1
 else
-    echo -e "roboshop user already exist $Y SKIPPING $N"
+ echo "Suessful: You are a root user"
 fi
 
-curl -s https://packagecloud.io/install/repositories/rabbitmq/erlang/script.rpm.sh | bash &>> $LOGFILE
 
-VALIDATE $? "Downloading erlang script"
+curl -s https://packagecloud.io/install/repositories/rabbitmq/erlang/script.rpm.sh | bash &>> $LOGFILE
+VALIDATE $? "Curl"
+
 
 curl -s https://packagecloud.io/install/repositories/rabbitmq/rabbitmq-server/script.rpm.sh | bash &>> $LOGFILE
+VALIDATE $? "Curl"
 
-VALIDATE $? "Downloading rabbitmq script"
 
 dnf install rabbitmq-server -y  &>> $LOGFILE
+VALIDATE $? "Installing Rabbitmq"
 
-VALIDATE $? "Installing RabbitMQ server"
 
-systemctl enable rabbitmq-server &>> $LOGFILE
+systemctl enable rabbitmq-server  &>> $LOGFILE
+VALIDATE $? "Enabling rabbitmq"
 
-VALIDATE $? "Enabling rabbitmq server"
 
-systemctl start rabbitmq-server  &>> $LOGFILE
+systemctl start rabbitmq-server &>> $LOGFILE
+VALIDATE $? "Starting rabbitmq"
 
-VALIDATE $? "Starting rabbitmq server"
 
 rabbitmqctl add_user roboshop roboshop123 &>> $LOGFILE
+VALIDATE $? "Adding user roboshop"
 
-VALIDATE $? "creating user"
 
 rabbitmqctl set_permissions -p / roboshop ".*" ".*" ".*" &>> $LOGFILE
-
-VALIDATE $? "setting permission"
+VALIDATE $? "Password setup"
